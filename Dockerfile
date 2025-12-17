@@ -11,10 +11,8 @@ RUN apt-get update && apt-get install -y \
         bcmath \
         exif \
         pcntl \
-        tokenizer \
-        xml \
         gd
-
+        
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
