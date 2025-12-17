@@ -19,7 +19,7 @@ WORKDIR /var/www
 
 COPY . .
 
-COPY --from=frontend /app/public/dist ./public/dist
+COPY --from=frontend /app/public/build ./public/build
 
 RUN composer install --no-dev --optimize-autoloader
 
