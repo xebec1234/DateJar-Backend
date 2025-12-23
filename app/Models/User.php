@@ -23,6 +23,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'gender',
+        'google_id',
+        'avatar',
     ];
 
     /**
@@ -47,25 +50,41 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->id)) {
+                do {
+                    $id = random_int(1000000000, 9999999999); // 10-digit random number
+                } while (self::where('id', $id)->exists());
+
+                $user->id = $id;
+            }
+        });
+    }
     
     public function savings()
     {
         return $this->hasMany(Saving::class);
     }
 
+    // Partner connections where this user is user1
+    public function partnerAsUserOne()
+    {
+        return $this->hasOne(Partner::class, 'user_id1');
+    }
+
+    // Partner connections where this user is user2
+    public function partnerAsUserTwo()
+    {
+        return $this->hasOne(Partner::class, 'user_id2');
+    }
+
+    // Get the Partner record this user belongs to (either user1 or user2)
     public function partner()
     {
-        return $this->belongsTo(User::class, 'partner_id');
-    }
-
-    public function goalAsUserOne()
-    {
-        return $this->hasOne(Goal::class, 'user_one_id');
-    }
-
-    public function goalAsUserTwo()
-    {
-        return $this->hasOne(Goal::class, 'user_two_id');
+        return $this->partnerAsUserOne()->orWhere('user_id2', $this->id);
     }
 
 }

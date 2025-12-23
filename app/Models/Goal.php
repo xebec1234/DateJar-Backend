@@ -10,20 +10,14 @@ class Goal extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_one_id',
-        'user_two_id',
+        'partner_id',
         'total_goal',
         'target_date',
         'weekly_amount_per_user',
     ];
 
-    public function userOne()
+    public function partner()
     {
-        return $this->belongsTo(User::class, 'user_one_id');
-    }
-
-    public function userTwo()
-    {
-        return $this->belongsTo(User::class, 'user_two_id');
+        return $this->belongsTo(Partner::class);
     }
 }

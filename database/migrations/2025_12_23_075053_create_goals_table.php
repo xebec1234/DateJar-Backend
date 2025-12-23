@@ -12,11 +12,9 @@ return new class extends Migration
     {
         Schema::create('goals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_one_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('user_two_id')->constrained('users')->cascadeOnDelete();
-            $table->decimal('total_goal', 10, 2);
+            $table->foreignId('partner_id')->constrained('partners')->onDelete('cascade');
+            $table->decimal('total_amount', 10, 2); // combined goal
             $table->date('target_date');
-            $table->decimal('weekly_amount_per_user', 10, 2)->nullable();
             $table->timestamps();
         });
     }

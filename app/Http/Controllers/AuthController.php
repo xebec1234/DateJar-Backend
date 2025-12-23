@@ -25,7 +25,11 @@ class AuthController extends Controller
          $token = $user->createToken('API Token')->plainTextToken;
 
     return response()->json([
-        'user' => $user, 
+        'user' => [
+            'id' => $user->id,   // ← return 10-digit ID
+            'name' => $user->name,
+            'email' => $user->email,
+        ],
         'token' => $token], 201);
     }
     
@@ -44,7 +48,11 @@ class AuthController extends Controller
         $token = $user->createToken('API Token')->plainTextToken;
 
         return response()->json([
-            'user' => $user, 
-            'token' => $token], 201);
+        'user' => [
+            'id' => $user->id,   // ← include the 10-digit ID
+            'name' => $user->name,
+            'email' => $user->email,
+        ], 
+            'token' => $token], 200);
     }
 }

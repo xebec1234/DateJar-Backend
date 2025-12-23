@@ -12,10 +12,13 @@ return new class extends Migration
     {
         Schema::create('savings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('partner_id')->constrained('partners')->onDelete('cascade');
+            $table->bigInteger('user_id'); // individual user saving
             $table->decimal('amount', 10, 2);
             $table->string('note')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

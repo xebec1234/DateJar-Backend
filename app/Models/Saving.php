@@ -10,10 +10,15 @@ class Saving extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'amount', 'note'];
+    protected $fillable = ['partner_id', 'user_id', 'amount', 'note'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class);
     }
 }
