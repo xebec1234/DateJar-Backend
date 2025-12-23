@@ -6,12 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Disable transaction for PostgreSQL
     public $withinTransaction = false;
 
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -19,7 +15,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable(); // nullable for Google login
+            $table->string('google_id')->nullable()->unique(); // for Google OAuth
+            $table->string('avatar')->nullable(); // optional profile picture
+            $table->foreignId('partner_id')->nullable()->unique()->constrained('users')->nullOnDelete(); // 1-to-1 partner
             $table->rememberToken();
             $table->timestamps();
         });
@@ -40,9 +39,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('sessions');

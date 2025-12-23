@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Goal extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'user_one_id',
+        'user_two_id',
+        'total_goal',
+        'target_date',
+        'weekly_amount_per_user',
+    ];
+
+    public function userOne()
+    {
+        return $this->belongsTo(User::class, 'user_one_id');
+    }
+
+    public function userTwo()
+    {
+        return $this->belongsTo(User::class, 'user_two_id');
+    }
+}

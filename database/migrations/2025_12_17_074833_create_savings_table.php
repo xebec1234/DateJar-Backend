@@ -7,25 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {   
     public $withinTransaction = false;
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
-    Schema::create('savings', function (Blueprint $table) {
-        $table->id();
-        $table->unsignedBigInteger('user_id');
-        $table->decimal('amount', 10, 2);
-        $table->string('note')->nullable();
-        $table->timestamps();
-
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-    });
+        Schema::create('savings', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->decimal('amount', 10, 2);
+            $table->string('note')->nullable();
+            $table->timestamps();
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('savings');

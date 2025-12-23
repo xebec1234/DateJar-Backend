@@ -47,8 +47,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
     public function savings()
     {
         return $this->hasMany(Saving::class);
     }
+
+    public function partner()
+    {
+        return $this->belongsTo(User::class, 'partner_id');
+    }
+
+    public function goalAsUserOne()
+    {
+        return $this->hasOne(Goal::class, 'user_one_id');
+    }
+
+    public function goalAsUserTwo()
+    {
+        return $this->hasOne(Goal::class, 'user_two_id');
+    }
+
 }
