@@ -19,12 +19,14 @@ class AuthController extends Controller
         $user = User::create([
             'name' =>$request->name,
             'email' =>$request->email,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
         ]);
 
          $token = $user->createToken('API Token')->plainTextToken;
 
-    return response()->json(['user' => $user, 'token' => $token]);
+    return response()->json([
+        'user' => $user, 
+        'token' => $token], 201);
     }
     
     public function login(Request $request){
@@ -41,6 +43,8 @@ class AuthController extends Controller
 
         $token = $user->createToken('API Token')->plainTextToken;
 
-        return response()->json(['user' => $user, 'token' => $token]);
+        return response()->json([
+            'user' => $user, 
+            'token' => $token], 201);
     }
 }
