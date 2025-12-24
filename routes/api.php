@@ -10,8 +10,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('savings', SavingController::class);
-
+    Route::post('/google-login', [AuthController::class, 'googleLogin']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -21,4 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/partners', [PartnerController::class, 'index']);  // view current partner
     Route::post('/partners', [PartnerController::class, 'store']); // connect partner
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy']);
+
+    //savings
+    Route::apiResource('savings', SavingController::class);
 });
