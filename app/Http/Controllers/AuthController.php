@@ -86,10 +86,15 @@ class AuthController extends Controller
             }
 
             // Find or create user
-            $user = User::where('google_id', $googleUser['sub'] ?? null)
-                ->orWhere('email', $googleUser['email'] ?? null)
-                ->first();
+            // First, try to find user by Google ID
+            $user = User::where('google_id', $googleUser['sub'] ?? null)->first();
 
+            // If not found, try to find by Google email
+            if (!$user) {
+                $user = User::where('email', $googleUser['email'] ?? null)->first();
+            }
+
+            // If still not found, create new user
             if (!$user) {
                 $user = User::create([
                     'name' => $googleUser['name'] ?? 'Google User',
@@ -100,6 +105,7 @@ class AuthController extends Controller
                     'password' => null,
                 ]);
             } else {
+                // Update user with Google info if google_id is missing
                 if (!$user->google_id) {
                     $user->update([
                         'google_id' => $googleUser['sub'] ?? null,
@@ -107,6 +113,7 @@ class AuthController extends Controller
                     ]);
                 }
             }
+
 
             // Create Sanctum token
             $token = $user->createToken('API Token')->plainTextToken;
