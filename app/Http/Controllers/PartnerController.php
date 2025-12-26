@@ -10,9 +10,11 @@ class PartnerController extends Controller
     // List the logged-in user's partner (if any)
     public function index(Request $request)
     {
-        $userId = $request->user()->id; // ← use $request->user() instead of auth()->id()
+        $userId = $request->user()->id;
 
-        $partner = Partner::where('user_id1', $userId)
+        // Fetch partner with related user names
+        $partner = Partner::with(['userOne', 'userTwo'])
+            ->where('user_id1', $userId)
             ->orWhere('user_id2', $userId)
             ->first();
 
@@ -20,7 +22,17 @@ class PartnerController extends Controller
             return response()->json(['message' => 'No partner found'], 404);
         }
 
-        return response()->json($partner);
+        // Determine who is the partner (the "other" user)
+        $partnerUser = $partner->user_id1 == $userId ? $partner->userTwo : $partner->userOne;
+
+        return response()->json([
+            'id' => $partner->id,
+            'user_id1' => $partner->user_id1,
+            'user_id2' => $partner->user_id2,
+            'partner_name' => $partnerUser ? $partnerUser->name : null,
+            'created_at' => $partner->created_at,
+            'updated_at' => $partner->updated_at,
+        ]);
     }
 
     // Search for a user by ID
