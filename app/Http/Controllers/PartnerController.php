@@ -23,6 +23,35 @@ class PartnerController extends Controller
         return response()->json($partner);
     }
 
+    // Search for a user by ID
+    public function search(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $searchId = $request->user_id;
+
+        // Get the user
+        $user = \App\Models\User::find($searchId);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Check if this user already has a partner
+        $hasPartner = Partner::where('user_id1', $user->id)
+            ->orWhere('user_id2', $user->id)
+            ->exists();
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'hasPartner' => $hasPartner,
+        ]);
+    }
+
+
     // Connect with another user
     public function store(Request $request)
     {

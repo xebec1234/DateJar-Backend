@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     //partner
+    Route::get('/partners/search', [PartnerController::class, 'search']);
     Route::get('/partners', [PartnerController::class, 'index']);  // view current partner
     Route::post('/partners', [PartnerController::class, 'store']); // connect partner
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy']);
