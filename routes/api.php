@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy']);
 
     //savings
+    Route::get('/savings/active', [SavingController::class, 'active']);
     Route::apiResource('savings', SavingController::class);
 
     // goals

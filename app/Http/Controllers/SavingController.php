@@ -19,6 +19,73 @@ class SavingController extends Controller
         return response()->json($savings);
     }
 
+public function active(Request $request)
+{
+    $userId = $request->user()->id;
+    $today = Carbon::today();
+    $weekStart = Carbon::now()->startOfWeek();
+
+    // Get active goal for the partner of the user
+    $activeGoal = Goal::where('partner_id', function ($q) use ($userId) {
+            $q->select('id')
+              ->from('partners')
+              ->where(function ($sub) use ($userId) {
+                  $sub->where('user_id1', $userId)
+                      ->orWhere('user_id2', $userId);
+              });
+        })
+        ->whereDate('target_date', '>=', $today)
+        ->orderBy('target_date')
+        ->first();
+
+    if (!$activeGoal) {
+        return response()->json(null, 200);
+    }
+
+    // Get the partner ID
+    $partner = $activeGoal->partner;
+    $partnerId = $partner->user_id1 === $userId ? $partner->user_id2 : $partner->user_id1;
+
+    // User savings
+    $userDaily = Saving::where('user_id', $userId)
+        ->where('goal_id', $activeGoal->id)
+        ->whereDate('created_at', $today)
+        ->sum('daily_savings');
+
+    $userWeekly = Saving::where('user_id', $userId)
+        ->where('goal_id', $activeGoal->id)
+        ->whereBetween('created_at', [$weekStart, $today])
+        ->sum('daily_savings');
+
+    $userTotal = Saving::where('user_id', $userId)
+        ->where('goal_id', $activeGoal->id)
+        ->sum('daily_savings');
+
+    // Partner savings
+    $partnerDaily = Saving::where('user_id', $partnerId)
+        ->where('goal_id', $activeGoal->id)
+        ->whereDate('created_at', $today)
+        ->sum('daily_savings');
+
+    $partnerWeekly = Saving::where('user_id', $partnerId)
+        ->where('goal_id', $activeGoal->id)
+        ->whereBetween('created_at', [$weekStart, $today])
+        ->sum('daily_savings');
+
+    $partnerTotal = Saving::where('user_id', $partnerId)
+        ->where('goal_id', $activeGoal->id)
+        ->sum('daily_savings');
+
+    return response()->json([
+        'goal_id' => $activeGoal->id,
+        'daily_savings_user' => $userDaily,
+        'daily_savings_partner' => $partnerDaily,
+        'weekly_savings_user' => $userWeekly,
+        'weekly_savings_partner' => $partnerWeekly,
+        'total_savings' => $userTotal + $partnerTotal,
+    ]);
+}
+
     // Create or update a saving for today
     public function store(Request $request)
     {
