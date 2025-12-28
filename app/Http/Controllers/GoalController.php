@@ -21,6 +21,22 @@ class GoalController extends Controller
         return response()->json($goals);
     }
 
+    // Get the active goal for the logged-in user's partner
+    public function active(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        $goal = Goal::whereHas('partner', function ($q) use ($userId) {
+            $q->where('user_id1', $userId)
+            ->orWhere('user_id2', $userId);
+        })
+        ->whereDate('target_date', '>', Carbon::today())
+        ->orderBy('target_date', 'asc')
+        ->first();
+
+        return response()->json($goal);
+    }
+
     // Create a new goal
     public function store(Request $request)
     {

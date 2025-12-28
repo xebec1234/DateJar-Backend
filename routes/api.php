@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // goals
     Route::get('/goals', [GoalController::class, 'index']);        // list all goals
+    Route::get('/goals/active', [GoalController::class, 'active']);  // get active goal
     Route::post('/goals', [GoalController::class, 'store']);       // create new goal
     Route::delete('/goals/{id}', [GoalController::class, 'destroy']);
 });
