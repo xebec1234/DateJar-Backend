@@ -12,12 +12,20 @@ class Goal extends Model
     protected $fillable = [
         'partner_id',
         'total_goal',
+        'individual_goal', // per user
+        'weekly_goal', // per user per week
         'target_date',
-        'weekly_amount_per_user',
     ];
 
+    // Goal belongs to a Partner
     public function partner()
     {
         return $this->belongsTo(Partner::class);
+    }
+
+    // Goal has many savings (from both users)
+    public function savings()
+    {
+        return $this->hasMany(Saving::class);
     }
 }

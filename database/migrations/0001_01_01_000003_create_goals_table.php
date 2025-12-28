@@ -13,7 +13,9 @@ return new class extends Migration
         Schema::create('goals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('partner_id')->constrained('partners')->onDelete('cascade');
-            $table->decimal('total_amount', 10, 2); // combined goal
+            $table->decimal('total_goal', 10, 2); // combined goal for both users
+            $table->decimal('individual_goal', 10, 2); // each user gets this
+            $table->decimal('weekly_goal', 10, 2); // weekly goal per user
             $table->date('target_date');
             $table->timestamps();
         });

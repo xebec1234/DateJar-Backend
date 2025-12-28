@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SavingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\GoalController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -23,5 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy']);
 
     //savings
-        Route::apiResource('savings', SavingController::class);
+    Route::apiResource('savings', SavingController::class);
+
+    // goals
+    Route::get('/goals', [GoalController::class, 'index']);        // list all goals
+    Route::post('/goals', [GoalController::class, 'store']);       // create new goal
+    Route::delete('/goals/{id}', [GoalController::class, 'destroy']);
 });
